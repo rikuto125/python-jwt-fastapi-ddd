@@ -36,6 +36,10 @@ class BackendBaseSettings(pydantic.BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = decouple.config("JWT_ACCESS_TOKEN_EXPIRE", cast=int)
     JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int = decouple.config("JWT_REFRESH_TOKEN_EXPIRE", cast=int)
 
+    # Password
+    PASSWORD_SALT: str = decouple.config("PASSWORD_SALT", cast=str)
+    HASH_ALGORITHM: str = decouple.config("HASH_ALGORITHM", cast=str)
+
     class Config:
         env_file = ROOT_DIR / ".env"
         env_file_encoding = "utf-8"

@@ -1,7 +1,7 @@
 import fastapi
 from starlette.middleware.cors import CORSMiddleware
 
-from adapter.controller.http import user
+from adapter.controller.http import user, book
 from config.settings.base import settings
 from driver.rdb import create_tables
 
@@ -26,5 +26,6 @@ def initialize_backend_application() -> fastapi.FastAPI:
 
     # ルーティングの設定
     app.include_router(router=user.router)
+    app.include_router(router=book.router)
 
     return app

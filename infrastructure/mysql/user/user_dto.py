@@ -7,7 +7,8 @@ from driver.rdb import Base
 
 
 def unixTimestamp() -> int:
-    return int(datetime.now().timestamp() * 1000)
+    # 後で日本時間にする必要がある
+    return int(datetime.now().timestamp())
 
 
 class UserDTO(Base):

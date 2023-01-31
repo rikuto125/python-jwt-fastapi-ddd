@@ -1,4 +1,5 @@
-from typing import Iterator
+from abc import abstractmethod, ABC
+from typing import Iterator, Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
@@ -16,6 +17,12 @@ router = APIRouter(
     prefix='/user',
     tags=['user'],
 )
+
+
+class UserController(ABC):
+    @abstractmethod
+    def get_current_active_user(self, token: str) -> Any:
+        pass
 
 
 def get_session() -> Iterator[Session]:
@@ -72,11 +79,11 @@ def login_create_token(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-    #returnでcookieにtokenを保存する
+    # returnでcookieにtokenを保存する
     return {'accsesstoken': login_create_token}
 
 
-#JWTの認証を行う
+# JWTの認証を行う
 def get_current_active_user(
         token: str = Depends(oauth2_scheme),
         user_command_usecase: UserCommandUseCase = Depends(user_command_usecase),
@@ -101,4 +108,3 @@ def get_me(
         current_user: UserCreateModel = Depends(get_current_active_user),
 ):
     return current_user
-

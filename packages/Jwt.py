@@ -1,16 +1,10 @@
 from datetime import datetime, timedelta
-from typing import List, Optional
 from fastapi import Form, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import JWTError, jwt
 from config.settings.base import settings
-from domain.user.user import User
 
-# oauth2_scheme = OAuth2PasswordBearer(
-#     tokenUrl="user/login_create_token",
-#     scheme_name="Bearer",
-#
-# )
+
 # OAuth2PasswordBearerのusernameとpasswordをemailとpasswordに変更しoauth2_scheme に代入
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="user/login_create_token",
@@ -31,6 +25,7 @@ class EmailPasswordRequestForm(OAuth2PasswordRequestForm):
         super().__init__(username=email, password=password, scope=scope)
         self.email = email
         self.password = self.password
+
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from starlette import status
+from adapter.controller.http.user import UserController
 
-from adapter.controller.http.user import get_current_active_user
 
 router = APIRouter(
     prefix='/book',
@@ -14,7 +14,7 @@ router = APIRouter(
     status_code=status.HTTP_200_OK,
 )
 async def test(
-        a=Depends(get_current_active_user),
+        a=Depends(UserController.get_current_active_user),
 ):
     print(a)
     return {'message': 'success'}

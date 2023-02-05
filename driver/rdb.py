@@ -7,12 +7,17 @@ from config.settings.base import settings
 DATABASE_DRIVER = settings.DATABASE_DRIVER
 USER_NAME = settings.DATABASE_USER
 PASSWORD = settings.DATABASE_PASSWORD
-HOST = settings.DATABASE_HOST
+HOST = settings.LOCAL_DATABASE_HOST
 PORT = settings.DATABASE_PORT
 DB_NAME = settings.DATABASE_NAME
 
+# localからdockerに接続する場合は、HOSTをDOCKER_DATABASE_HOSTに変更する
+
+print("DB接続開始")
+print(settings.DOCKER_DATABASE_URL)
+
 engine = create_engine(
-    settings.DATABASE_URL,
+    settings.DOCKER_DATABASE_URL
 )
 
 SessionLocal = scoped_session(

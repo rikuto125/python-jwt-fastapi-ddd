@@ -1,0 +1,31 @@
+version: "3"
+services:
+  jwt_user_login:
+    image: 'mysql:8.0'
+    container_name: jwt_user_login
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: jwt_user_login
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - './tmp/mysql:/var/lib/mysql'
+    ports:
+      - '33065:3306'
+    tty: true
+
+  app:
+    depends_on:
+      - jwt_user_login
+    container_name: pymysqlclient
+    build:
+      context: .
+      dockerfile: ./DockerFile
+    ports:
+      - "18000:8000"
+    tty: true
+    volumes:
+      - .:/app
+
+

@@ -1,7 +1,7 @@
 import fastapi
 from starlette.middleware.cors import CORSMiddleware
 
-from adapter.controller.http import user, book
+from adapter.controller.http import user, auth
 from config.settings.base import settings
 from driver.rdb import create_tables
 
@@ -12,8 +12,6 @@ def initialize_backend_application() -> fastapi.FastAPI:
     @app.on_event("startup")
     async def startup_event():
         create_tables()
-
-    # app.add_middleware(DBSessionMiddleware, db_url=engine)
 
     # CORSの設定
     app.add_middleware(
@@ -26,6 +24,6 @@ def initialize_backend_application() -> fastapi.FastAPI:
 
     # ルーティングの設定
     app.include_router(router=user.router)
-    app.include_router(router=book.router)
+    app.include_router(router=auth.router)
 
     return app

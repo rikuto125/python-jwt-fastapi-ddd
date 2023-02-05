@@ -2,11 +2,10 @@ from abc import ABC, abstractmethod
 from typing import Optional, cast
 
 import shortuuid
-from fastapi import Depends
 
 from domain.user.user import User
 from domain.user.user_repsotory import UserRepository
-from packages.Jwt import create_access_token, oauth2_scheme, verify_token
+from packages.Jwt import create_access_token
 from packages.password import get_password_hash, verify_password
 from usecase.user.user_command_model import UserCreateModel
 from usecase.user.user_query_model import UserReadModel
@@ -42,7 +41,7 @@ class UserCommandUseCase(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_current_user(self, token: str = Depends(oauth2_scheme)) -> Optional[UserReadModel]:
+    def get_current_user(self, email: str) -> Optional[UserReadModel]:
         raise NotImplementedError
 
 
@@ -92,15 +91,13 @@ class UserCommandUseCaseImpl(UserCommandUseCase):
 
     def get_current_user(
             self,
-            token: str = Depends(oauth2_scheme),
+            email: str,
     ) -> Optional[UserReadModel]:
         try:
-            email = verify_token(token)
             user = self.uow.user_repository.find_by_email(email)
             if user is None:
                 raise ValueError("User not found")
             return UserReadModel.from_entity(cast(User, user))
-
         except:
             self.uow.rollback()
             raise

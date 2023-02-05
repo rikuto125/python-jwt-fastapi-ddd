@@ -14,21 +14,24 @@ class BackendBaseSettings(pydantic.BaseSettings):
     LOGGING_LEVEL: str = decouple.config("BACKEND_LOGGING_LEVEL", cast=str)
 
     # Middleware
-    CORS_HOSTS: list[str] = decouple.config("BACKEND_HOST", cast=list[str])
-    CORS_ORIGINS: list[str] = decouple.config("BACKEND_CORS_ORIGIN", cast=list[str])
+    CORS_HOSTS:str = decouple.config("BACKEND_HOST", default="", cast=str)
+    CORS_ORIGINS:list[str] = decouple.config("BACKEND_CORS_ALLOW_ORIGIN", default="", cast=str).split(",")
     CORS_CREDENTIALS: bool = decouple.config("BACKEND_CORS_CREDENTIALS", cast=bool)
-    CORS_METHODS: list[str] = decouple.config("BACKEND_CORS_METHODS", cast=list[str])
-    CORS_HEADERS: list[str] = decouple.config("BACKEND_CORS_HEADERS", cast=list[str])
+    CORS_METHODS: list[str] = decouple.config("BACKEND_CORS_METHODS", default="", cast=str).split(",")
+    CORS_HEADERS: list[str] = decouple.config("BACKEND_CORS_HEADERS", default="", cast=str).split(",")
     CORS_MAXAGE: int = decouple.config("BACKEND_CORS_MAXAGE", cast=int)
 
     # Database
     DATABASE_DRIVER: str = decouple.config("DATABASE_DRIVER", cast=str)
     DATABASE_NAME: str = decouple.config("DATABASE_NAME", cast=str)  # db
-    DATABASE_HOST: str = decouple.config("DATABASE_HOST", cast=str)  # postgresserver
+    LOCAL_DATABASE_HOST: str = decouple.config("LOCAL_DATABASE_HOST", cast=str)  # postgresserver
+    DOCKER_DATABASE_HOST: str = decouple.config("DOCKER_DATABASE_HOST", cast=str)  # docker-compose.ymlのservice名
     DATABASE_PORT: str = decouple.config("DATABASE_PORT", cast=str)  # 5432
     DATABASE_USER: str = decouple.config("DATABASE_USER", cast=str)  # user
     DATABASE_PASSWORD: str = decouple.config("DATABASE_PASSWORD", cast=str)  # password
-    DATABASE_URL: str = DATABASE_DRIVER + "://" + DATABASE_USER + ":" + DATABASE_PASSWORD + "@" + DATABASE_HOST + ":" + str(DATABASE_PORT) + "/" + DATABASE_NAME
+    LOCAL_DATABASE_URL: str = DATABASE_DRIVER + "://" + DATABASE_USER + ":" + DATABASE_PASSWORD + "@" + LOCAL_DATABASE_HOST + ":" + DATABASE_PORT + "/" + DATABASE_NAME
+
+    DOCKER_DATABASE_URL: str = DATABASE_DRIVER + "://" + DATABASE_USER + ":" + DATABASE_PASSWORD + "@" + DOCKER_DATABASE_HOST + ":" +DATABASE_PORT + "/" + DATABASE_NAME
 
     # JWT
     JWT_SECRET_KEY: str = decouple.config("JWT_SECRET_KEY", cast=str)

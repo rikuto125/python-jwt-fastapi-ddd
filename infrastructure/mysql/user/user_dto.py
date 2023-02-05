@@ -41,13 +41,3 @@ class UserDTO(Base):
             created_at=now,
             updated_at=now,
         )
-
-# class User(Base):
-#     __tablename__ = 'users'
-#     id = Column('id', Integer, primary_key=True, autoincrement=True)
-#     name = Column('name', String(200))
-#     age = Column('age', Integer)
-#     email = Column('email', String(100))
-#
-# if __name__ == "__main__":
-#     Base.metadata.create_all(bind=engine)

@@ -1,15 +1,15 @@
-from abc import abstractmethod, ABC
-from typing import Iterator, Any
+from datetime import datetime
+from typing import Iterator
 
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, Response
+from pydantic.validators import timedelta
 from sqlalchemy.orm import Session
 from starlette import status
 
 from domain.user.user_repsotory import UserRepository
 from driver.rdb import SessionLocal
 from infrastructure.mysql.user.user_repository import UserRepositoryImpl, UserCommandUseCaseUnitOfWorkImpl
-from packages.Jwt import EmailPasswordRequestForm, oauth2_scheme
+from packages.Jwt import EmailPasswordRequestForm, verify_token
 from usecase.user.user_command_model import UserCreateModel
 from usecase.user.user_usecase import UserCommandUseCase, UserCommandUseCaseUnitOfWork, UserCommandUseCaseImpl
 
@@ -17,12 +17,6 @@ router = APIRouter(
     prefix='/user',
     tags=['user'],
 )
-
-
-class UserController(ABC):
-    @abstractmethod
-    def get_current_active_user(self, token: str) -> Any:
-        pass
 
 
 def get_session() -> Iterator[Session]:
@@ -46,7 +40,7 @@ def user_command_usecase(session: Session = Depends(get_session)) -> UserCommand
     '/create',
     status_code=status.HTTP_201_CREATED,
 )
-def create_user(
+async def create_user(
         user: UserCreateModel,
         user_command_usecase: UserCommandUseCase = Depends(user_command_usecase),
 ):
@@ -65,31 +59,41 @@ def create_user(
 @router.post(
     '/login_create_token',
     status_code=status.HTTP_201_CREATED,
+
 )
-def login_create_token(
+async def login_create_token(
         form_data: EmailPasswordRequestForm = Depends(),
         user_command_usecase: UserCommandUseCase = Depends(user_command_usecase),
 ):
     try:
         login_create_token = user_command_usecase.login_create_token(form_data.email, form_data.password)
-
     except Exception as e:
         print(e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-    # returnでcookieにtokenを保存する
-    return {'accsesstoken': login_create_token}
+    # cookieにtokenを保存
+    response = Response()
+    response.set_cookie(
+        key="access_token",
+        value=f"Bearer {login_create_token}",
+        expires=datetime.utcnow() + timedelta(minutes=15),
+        httponly=True,
+    )
+    return {'token': login_create_token}
 
-
-# JWTの認証を行う
-def get_current_active_user(
-        token: str = Depends(oauth2_scheme),
+@router.get(
+    '/get_me',
+    status_code=status.HTTP_200_OK,
+)
+async def get_me(
+        payload: dict = Depends(verify_token),
         user_command_usecase: UserCommandUseCase = Depends(user_command_usecase),
 ):
+    print(payload)
     try:
-        user = user_command_usecase.get_current_user(token)
+        user = user_command_usecase.get_current_user(payload.get("sub"))
 
     except Exception as e:
         print(e)
@@ -98,13 +102,3 @@ def get_current_active_user(
         )
 
     return user
-
-
-@router.get(
-    '/get_me',
-    status_code=status.HTTP_200_OK,
-)
-def get_me(
-        current_user: UserCreateModel = Depends(get_current_active_user),
-):
-    return current_user

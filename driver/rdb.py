@@ -17,7 +17,8 @@ print("DB接続開始")
 print(settings.DOCKER_DATABASE_URL)
 
 engine = create_engine(
-    settings.DOCKER_DATABASE_URL
+    # settings.DOCKER_DATABASE_URL
+    settings.LOCAL_DATABASE_URL
 )
 
 SessionLocal = scoped_session(
@@ -32,7 +33,6 @@ Base = declarative_base()
 
 
 def create_tables():
-    from infrastructure.mysql.user import user_dto
     # テーブルを作成する
     Base.metadata.create_all(bind=engine)
 

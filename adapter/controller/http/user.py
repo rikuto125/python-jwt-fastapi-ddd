@@ -9,9 +9,12 @@ from starlette import status
 from domain.user.user_repsotory import UserRepository
 from driver.rdb import SessionLocal
 from infrastructure.mysql.user.user_repository import UserRepositoryImpl, UserCommandUseCaseUnitOfWorkImpl
+from infrastructure.mysql.user.user_service import UserQueryServiceImpl
 from packages.Jwt import EmailPasswordRequestForm, verify_token
 from usecase.user.user_command_model import UserCreateModel
-from usecase.user.user_usecase import UserCommandUseCase, UserCommandUseCaseUnitOfWork, UserCommandUseCaseImpl
+from usecase.user.user_command_usecase import UserCommandUseCase, UserCommandUseCaseUnitOfWork, UserCommandUseCaseImpl
+from usecase.user.user_query_service import UserQueryService
+from usecase.user.user_query_usecase import UserQueryUseCase, UserQueryUseCaseImpl
 
 router = APIRouter(
     prefix='/user',
@@ -34,6 +37,11 @@ def user_command_usecase(session: Session = Depends(get_session)) -> UserCommand
         user_repository,
     )
     return UserCommandUseCaseImpl(uow)
+
+
+def user_query_usecase(session: Session = Depends(get_session)) -> UserQueryUseCase:
+    user_query_service: UserQueryService = UserQueryServiceImpl(session)
+    return UserQueryUseCaseImpl(user_query_service)
 
 
 @router.post(
@@ -89,11 +97,10 @@ async def login_create_token(
 )
 async def get_me(
         payload: dict = Depends(verify_token),
-        user_command_usecase: UserCommandUseCase = Depends(user_command_usecase),
+        user_query_usecase: UserQueryUseCase = Depends(user_query_usecase),
 ):
-    print(payload)
     try:
-        user = user_command_usecase.get_current_user(payload.get("sub"))
+        user = user_query_usecase.fetch_user_by_email(payload.get("sub"))
 
     except Exception as e:
         print(e)

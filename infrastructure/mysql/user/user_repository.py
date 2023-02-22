@@ -5,7 +5,7 @@ from sqlalchemy.exc import NoResultFound
 from domain.user.user import User
 from domain.user.user_repsotory import UserRepository
 from infrastructure.mysql.user import UserDTO
-from usecase.user.user_usecase import UserCommandUseCaseUnitOfWork
+from usecase.user.user_command_usecase import UserCommandUseCaseUnitOfWork
 from sqlalchemy.orm.session import Session
 
 

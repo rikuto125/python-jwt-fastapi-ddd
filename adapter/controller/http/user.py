@@ -1,6 +1,4 @@
-from datetime import datetime
 from typing import Iterator
-
 from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic.validators import timedelta
 from sqlalchemy.orm import Session
@@ -70,6 +68,7 @@ async def create_user(
 
 )
 async def login_create_token(
+        response: Response,
         form_data: EmailPasswordRequestForm = Depends(),
         user_command_usecase: UserCommandUseCase = Depends(user_command_usecase),
 ):
@@ -81,15 +80,17 @@ async def login_create_token(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-    # cookieにtokenを保存
-    response = Response()
+    # Bearerトークンをクッキーに保存
     response.set_cookie(
-        key="access_token",
-        value=f"Bearer {login_create_token}",
-        expires=datetime.utcnow() + timedelta(minutes=15),
+        key='access_token',
+        value="Bearer " + login_create_token,
         httponly=True,
+        max_age=timedelta(minutes=30),
     )
+
     return {'token': login_create_token}
+    #return {'message': 'success'}
+
 
 @router.get(
     '/get_me',

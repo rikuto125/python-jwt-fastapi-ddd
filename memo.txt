@@ -5,3 +5,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 mysql -u root -p
 password入力後
 show databases;
+
+#url
+https://little-hands.hatenablog.com/entry/2019/12/02/cqrs
+

@@ -5,24 +5,6 @@ from usecase.user.user_query_model import UserReadModel
 from usecase.user.user_query_service import UserQueryService
 
 
-class UserQueryUseCaseUnitOfWork(ABC):
-    """UserQueryUseCaseUnitOfWork defines an interface based on Unit of Work pattern."""
-
-    user_repository: UserRepository
-
-    @abstractmethod
-    def begin(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def commit(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def rollback(self):
-        raise NotImplementedError
-
-
 class UserQueryUseCase(ABC):
     """UserQueryUseCase defines a command usecase inteface related User entity."""
 

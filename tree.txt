@@ -1,0 +1,57 @@
+.(jwt-fastapi)
+├── DockerFile
+├── adapter
+│     ├── __init__.py
+│     └── controller
+│         ├── __init__.py
+│         └── http
+│             ├── __init__.py
+│             ├── auth.py
+│             └── user.py
+├── cmd
+│     ├── __init__.py
+│     └── api.py
+├── config
+│     ├── __init__.py
+│     └── settings
+│         ├── __init__.py
+│         └── base.py
+├── docker-compose.yml
+├── domain
+│     ├── __init__.py
+│     └── user
+│         ├── __init__.py
+│         ├── user.py
+│         └── user_repsotory.py
+├── driver
+│     ├── __init__.py
+│     └── rdb.py
+├── infrastructure
+│     ├── __init__.py
+│     └── mysql
+│         ├── __init__.py
+│         └── user
+│             ├── __init__.py
+│             ├── user_dto.py
+│             ├── user_repository.py
+│             └── user_service.py
+├── main.py
+├── memo.txt
+├── output.txt
+├── packages
+│     ├── Jwt.py
+│     ├── __init__.py
+│     └── password.py
+├── requirements.txt
+├── test_main.http
+└── usecase
+    ├── __init__.py
+    └── user
+        ├── __init__.py
+        ├── user_command_model.py
+        ├── user_command_usecase.py
+        ├── user_query_model.py
+        ├── user_query_service.py
+        └── user_query_usecase.py
+
+15 directories, 39 files

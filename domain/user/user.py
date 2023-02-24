@@ -1,4 +1,6 @@
 from typing import Optional
+
+
 class User:
 
     def __init__(self,
@@ -15,5 +17,3 @@ class User:
         self.hashed_password = hashed_password
         self.created_at = created_at
         self.updated_at = updated_at
-
-

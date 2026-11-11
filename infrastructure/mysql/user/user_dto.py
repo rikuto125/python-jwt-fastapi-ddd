@@ -36,7 +36,6 @@ class UserDTO(Base):
             id=self.id,
             name=self.name,
             email=self.email,
-            hashed_password=self.hashed_password,
             created_at=self.created_at,
             updated_at=self.updated_at,
         )

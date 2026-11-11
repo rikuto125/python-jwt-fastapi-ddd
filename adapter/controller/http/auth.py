@@ -15,5 +15,4 @@ router = APIRouter(
 async def auth(
         authenticate=Depends(verify_token),
 ):
-    print(authenticate)
     return {'message': 'success'}

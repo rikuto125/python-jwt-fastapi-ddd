@@ -14,7 +14,6 @@ DB_NAME = settings.DATABASE_NAME
 # localからdockerに接続する場合は、HOSTをDOCKER_DATABASE_HOSTに変更する
 
 print("DB接続開始")
-print(settings.DOCKER_DATABASE_URL)
 
 engine = create_engine(
     settings.DOCKER_DATABASE_URL
